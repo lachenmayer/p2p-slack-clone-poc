@@ -5,6 +5,8 @@ const discovery = require('hyperdiscovery')
 const ram = require('random-access-memory')
 const nanobus = require('nanobus')
 
+import {MessageType, EventType} from './interfaces'
+
 interface Hypercore<T> {
   append (message: T, callback: (err: Error | null, index: number) => void): void,
   ready (callback: (err: Error | null) => void): void,
@@ -13,18 +15,6 @@ interface Hypercore<T> {
   key: Buffer,
   writable: boolean,
 }
-
-interface EventType {
-  type: string,
-  payload: any,
-  ts: number,
-}
-
-interface MessageType {
-  author: string,
-  content: EventType,
-}
-
 
 const debug = true
 

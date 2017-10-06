@@ -1,4 +1,4 @@
-import {app, BrowserWindow} from 'electron'
+import {app, BrowserWindow, ipcMain} from 'electron'
 const swarm = require('discovery-swarm')
 const getPort = require('get-port')
 const path = require('path')
@@ -17,10 +17,43 @@ function createWindow () {
     slashes: true,
   }))
 
+  win.maximize()
   win.webContents.openDevTools()
 
   win.on('closed', () => {
     win = null
+  })
+
+  const me = new Feed()
+  me.onReady(async key => {
+    me.onRead(message => {win.webContents.send('message', message)})
+
+    ipcMain.on('send', (_, message) => {
+      console.log(message)
+      me.writeMessage(message)
+    })
+
+    const channel = swarm({id: key, utp: false})
+    channel.join('channel')
+    const port = await getPort()
+    channel.listen(port)
+    channel.on('connection', (connection, info) => {
+      const key = info.id.toString('hex')
+      console.log('channel: connecting to', key)
+      const other = new Feed(key)
+      other.onReady(key => {
+        win.webContents.send('join', key.toString('hex'))
+        other.onRead(message => win.webContents.send('message', message))
+      })
+    })
+  })
+
+  const rl = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  })
+  rl.on('line', message => {
+    me.writeMessage(message)
   })
 }
 
@@ -35,27 +68,3 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
-const me = new Feed()
-me.onReady(async key => {
-  me.onRead(message => win.webContents.send('message', message))
-
-  const channel = swarm({id: key, utp: false})
-  channel.join('channel')
-  const port = await getPort()
-  channel.listen(port)
-  channel.on('connection', (connection, info) => {
-    const key = info.id.toString('hex')
-    console.log('channel: connecting to', key)
-    const other = new Feed(key)
-    other.onRead(message => win.webContents.send('message', message))
-  })
-})
-
-// const rl = require('readline').createInterface({
-//   input: process.stdin,
-//   output: process.stdout,
-// })
-// rl.on('line', message => {
-//   me.writeMessage(message)
-// })

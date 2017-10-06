@@ -4,6 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "brfs": "^1.4.3",
+    "browserify": "^14.4.0",
+    "choo": "^6.4.0",
     "discovery-swarm": "^4.4.2",
     "electron": "^1.7.8",
     "get-port": "^3.2.0",
@@ -11,13 +14,16 @@
     "hyperdiscovery": "^6.0.4",
     "nanobus": "^4.2.0",
     "random-access-memory": "^2.4.0",
-    "typescript": "^2.5.3"
+    "tsify": "^3.0.3",
+    "typescript": "^2.5.3",
+    "watchify": "^3.9.0"
   },
   "devDependencies": {
     "tsd": "^0.6.5"
   },
   "scripts": {
     "start": "electron build/index.js",
-    "watch": "tsc -w --outDir build/"
+    "watch": "tsc -w --outDir build/",
+    "build": "tsc --outDir build/"
   }
 }
