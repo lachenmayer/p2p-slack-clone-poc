@@ -1,0 +1,21 @@
+{
+  "name": "wetransfer-innovation-day",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^1.7.8",
+    "hypercore": "^6.10.1",
+    "hyperdiscovery": "^6.0.4",
+    "nanobus": "^4.2.0",
+    "random-access-memory": "^2.4.0",
+    "typescript": "^2.5.3"
+  },
+  "devDependencies": {
+    "tsd": "^0.6.5"
+  },
+  "scripts": {
+    "start": "electron build/index.js",
+    "watch": "tsc -w --outDir build/"
+  }
+}
