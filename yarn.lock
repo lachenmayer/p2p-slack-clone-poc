@@ -380,7 +380,7 @@ discovery-channel@^5.3.0:
     pretty-hash "^1.0.0"
     thunky "^0.1.0"
 
-discovery-swarm@^4.0.2:
+discovery-swarm@^4.0.2, discovery-swarm@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/discovery-swarm/-/discovery-swarm-4.4.2.tgz#5d3160a46019e50e874195765df7d601ee55a813"
   dependencies:
@@ -657,6 +657,10 @@ generate-object-property@^1.2.0:
   resolved "https://registry.yarnpkg.com/generate-object-property/-/generate-object-property-1.2.0.tgz#9c0e1c40308ce804f4783618b937fa88f99d50d0"
   dependencies:
     is-property "^1.0.0"
+
+get-port@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/get-port/-/get-port-3.2.0.tgz#dd7ce7de187c06c8bf353796ac71e099f0980ebc"
 
 get-stdin@^0.1.0:
   version "0.1.0"
