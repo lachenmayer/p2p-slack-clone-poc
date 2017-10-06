@@ -1,4 +1,5 @@
 import {Readable} from 'stream'
+const getPort = require('get-port')
 const hypercore = require('hypercore')
 const discovery = require('hyperdiscovery')
 const ram = require('random-access-memory')
@@ -44,14 +45,20 @@ export default class Feed {
       {valueEncoding: 'json'}
     )
 
-    this.feed.ready(err => {
+    this.feed.ready(async err => {
       if (err) throw err
       this.key = this.feed.key.toString('hex')
 
-      const swarm = discovery(this.feed)
+      const swarm = discovery(this.feed, {
+        port: await getPort(),
+      })
 
       swarm.on('connect', (peer, id) => {
         this.events.emit('peer/connect', swarm.peers.length)
+      })
+
+      swarm.on('disconnect', (peer, id) => {
+        this.events.emit('peer/disconnect', swarm.peers.length)
       })
 
       this.events.on('close', () => {
