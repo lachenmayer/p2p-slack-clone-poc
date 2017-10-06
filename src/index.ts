@@ -1,21 +1,26 @@
 import {app} from 'electron'
+import {Readable} from 'stream'
 const hypercore = require('hypercore')
 const discovery = require('hyperdiscovery')
 const ram = require('random-access-memory')
 const nanobus = require('nanobus')
 
-type Hypercore = {
-  ready: () => void,
+interface Hypercore<T> {
+  append (message: T, callback: (err: Error | null, index: number) => void): void,
+  ready (callback: (err: Error | null) => void): void,
+  close (callback: (err: Error | null) => void): void,
+  createReadStream ({live: boolean}): Readable,
+  key: Buffer,
   writable: boolean,
 }
 
-type EventType = {
+interface EventType {
   type: string,
   payload: any,
   ts: number,
 }
 
-type MessageType = {
+interface MessageType {
   author: string,
   content: EventType,
 }
@@ -26,7 +31,7 @@ const debug = true
 class Feed {
   key: string
   events: any
-  feed: Hypercore
+  feed: Hypercore<EventType>
 
   constructor (otherKey?: string, persist: boolean = false) {
     this.events = nanobus()
@@ -40,10 +45,11 @@ class Feed {
       {valueEncoding: 'json'}
     )
 
-    this.feed.ready(() => {
+    this.feed.ready(err => {
+      if (err) throw err
       this.key = this.feed.key.toString('hex')
 
-      const swarm = discovery(feed)
+      const swarm = discovery(this.feed)
 
       swarm.on('connect', (peer, id) => {
         this.events.emit('peer/connect', swarm.peers.length)
@@ -51,7 +57,7 @@ class Feed {
 
       this.events.on('close', () => {
         swarm.close(swarmErr => {
-          feed.close(feedErr => {
+          this.feed.close(feedErr => {
             this.events.emit('closed', swarmErr || feedErr)
           })
         })
@@ -59,7 +65,7 @@ class Feed {
 
       this.events.emit('ready', this.key)
 
-      if (feed.writable) {
+      if (this.feed.writable) {
         this.events.on('write', (event: EventType) => {
           this.feed.append(event, err => {
             if (err) console.error(err)
@@ -67,7 +73,7 @@ class Feed {
         })
       }
 
-      feed.createReadStream({live: true}).on('data', (event: EventType) => {
+      this.feed.createReadStream({live: true}).on('data', (event: EventType) => {
         this.events.emit('read', event)
       })
     })
