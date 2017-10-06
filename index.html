@@ -3,6 +3,64 @@
 <head>
 <meta charset="utf-8">
 <title></title>
+<style media="screen">
+html, body, #container {
+  height: 100%;
+}
+
+body {
+  font-family: Helvetica;
+  margin: 0;
+}
+
+#container {
+  display: flex;
+}
+
+.messages {
+  padding: 10px;
+}
+
+.members {
+  max-width: 200px;
+  overflow: hidden;
+  background: #444;
+}
+
+.member {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 9999px;
+  margin: 5px;
+}
+
+.input {
+  all: unset;
+  background: #eee;
+  font-size: 2em;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+}
+
+.message .content {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 9999px;
+}
+
+.message .author {
+  font-family: Menlo, Monaco, monospace;
+  font-size: 0.8em;
+}
+
+.message .time {
+  color: #ccc;
+  font-size: 0.8em;
+}
+</style>
 </head>
 <body>
 <div id="container"></div>
