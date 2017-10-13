@@ -2,6 +2,8 @@
 
 Chat with friends, completely p2p.
 
+![](https://github.com/lachenmayer/p2p-slack-clone-poc/raw/master/screenshot.png)
+
 - Your messages are written to a Hypercore append-only log
 - Hypercore is an append-only log that guarantees file integrity (through a Merkle tree + digital signatures)
 - They can be replicated in real time over any untrusted network (ie. p2p)
